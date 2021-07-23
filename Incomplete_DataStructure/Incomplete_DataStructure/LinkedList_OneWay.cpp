@@ -40,11 +40,11 @@ void DeleteFront()
 {
 	//헤드 next를 헤드next의 next로 설정.
 	Node* cur = head->next;
-	while(cur != NULL)
-	{ 
-		Node *Next = cur->next;
+	if (cur != NULL)
+	{
+		head->next = cur->next;
 		free(cur);
-		cur = Next;
+
 	}
 
 
@@ -60,6 +60,19 @@ void ShowAll()
 	}
 	cout << endl;
 
+}
+
+void DeleteAll()
+{
+	/*
+	Node* cur = head->next;
+	while (head->next != NULL )
+	{
+		Node* beNext = cur->next;
+		free(cur);
+		head->next = beNext;
+	}
+	*/
 }
 
 
@@ -96,6 +109,7 @@ int main(void) {
 			break;
 			//FreeAll
 		case 4:
+			DeleteAll();
 			break;
 		default:
 			break;
