@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Desktop\LinkedList_OneWay.cpp">
+    <ClCompile Include="LinkedList_OneWay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

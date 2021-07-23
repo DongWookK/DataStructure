@@ -26,8 +26,11 @@ Node* head;
 
 void AddFront(Node* root, int data)
 {
+	//Insert data in list
 	Node* temp = new Node;
 	temp->data = data;
+
+	//connect with head
 	temp->next = root->next;
 	root->next = temp;
 
@@ -35,6 +38,15 @@ void AddFront(Node* root, int data)
 
 void DeleteFront()
 {
+	//헤드 next를 헤드next의 next로 설정.
+	Node* cur = head->next;
+	while(cur != NULL)
+	{ 
+		Node *Next = cur->next;
+		free(cur);
+		cur = Next;
+	}
+
 
 }
 
@@ -43,7 +55,7 @@ void ShowAll()
 	Node* temp = head->next;
 	while (temp != NULL)
 	{
-		cout << temp->data;
+		cout << temp->data << " ";
 		temp = temp->next;
 	}
 	cout << endl;
@@ -59,23 +71,31 @@ int main(void) {
 	int input = 1;
 	int data;
 
+	cout << "OneWay LinkedList :)" << endl;
 	while (input != 5)
 	{
-		cout << "OneWay LinkedList :)" << endl;
 		cout << "Enter the under choice" << endl;
 		cout << "1. Add Front, 2.DeleteFront, 3.ShowAll, 4.FreeAll, 5.Exit" << endl;
 		cin >> input;
 
 		switch (input)
 		{
+			//Add Front
 		case 1:
 			cout << "Enter the input(Data)" << endl;
 			cin >> data;
+			AddFront(head,data);
 			break;
+			//Delete Front
 		case 2:
+			DeleteFront();
 			break;
+			//Showall
 		case 3:
 			ShowAll();
+			break;
+			//FreeAll
+		case 4:
 			break;
 		default:
 			break;
