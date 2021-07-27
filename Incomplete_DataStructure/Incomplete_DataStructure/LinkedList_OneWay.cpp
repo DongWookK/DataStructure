@@ -64,15 +64,16 @@ void ShowAll()
 
 void DeleteAll()
 {
-	/*
+	
 	Node* cur = head->next;
-	while (head->next != NULL )
+	while ( cur != NULL )
 	{
 		Node* beNext = cur->next;
+		cur->next = beNext;
 		free(cur);
-		head->next = beNext;
+		cur = beNext;
 	}
-	*/
+	
 }
 
 
