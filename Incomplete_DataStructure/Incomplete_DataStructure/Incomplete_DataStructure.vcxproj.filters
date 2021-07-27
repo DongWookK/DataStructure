@@ -18,5 +18,8 @@
     <ClCompile Include="LinkedList_OneWay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LinkedList_TwoWay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
