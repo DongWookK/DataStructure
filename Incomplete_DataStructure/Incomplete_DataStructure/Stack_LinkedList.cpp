@@ -29,7 +29,7 @@ Node* head;
 void Push(Stack* stack,int data)
 {
 	Node* cur = head->next;
-	Node* node;
+	Node* node = new Node;
 	node->data = data;
 
 	head->next = node;
@@ -40,25 +40,42 @@ void Push(Stack* stack,int data)
 
 }
 
-void Pop()
+void Pop(Stack* stack)
 {
-
+	Node* top = stack->top;
+	if (top != NULL)
+	{
+		head->next = top->next;
+		stack->top = head->next;
+		free(top);
+	}
+	else
+	{
+		cout << "there's No Top" << endl;
+	}
+	
 }
 
-void ShowAll()
+void ShowAll(Stack* stack)
 {
 	Node* cur = head->next;
 	while (cur != NULL)
 	{
-		cout << cur->data << " ";
-		cur = cur -> next;
+		if (cur == stack->top)
+		{
+			cout << "(Top)";
+		}
+			cout << cur->data << " ";
+			cur = cur->next;
 	}
+	cout << endl;
 
 
 }
 
 int main()
 {
+	head = new Node;
 	head->next = NULL;
 	Stack* stack = new Stack;
 	stack->top = NULL;
@@ -66,6 +83,10 @@ int main()
 	Push(stack,3);
 	Push(stack,4);
 	Push(stack,6);
+	ShowAll(stack);
+	Pop(stack);
+	Pop(stack);
+	ShowAll(stack);
 
 
 
