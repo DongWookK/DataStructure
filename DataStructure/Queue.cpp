@@ -34,7 +34,7 @@ int Pop()
 
 void ShowAll()
 {
-	int i = front;
+	int i = 0;
 	while (i != rear)
 	{
 		cout << queue[i] << " ";
@@ -49,10 +49,6 @@ int main()
 	Push(3);
 	Push(4);
 	Push(5);
-	Push(6);
-	ShowAll();
-	cout << Pop() << endl;
-	cout << Pop() << endl;
 	ShowAll();
 	return 0;
 }
