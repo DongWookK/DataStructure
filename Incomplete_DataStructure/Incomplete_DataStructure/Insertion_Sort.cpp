@@ -33,7 +33,7 @@ void main()
 	
 	
 
-	//descending order   - fail
+	//descending order
 	
 	for (i=0;i<8;i++)
 	{
@@ -41,7 +41,7 @@ void main()
 		while (j >0 && temp[j] > temp[j-1])
 		{
 			Swap(&temp[j], &temp[j - 1]);
-			j--;
+			j--; 
 		}
 	}
 	
