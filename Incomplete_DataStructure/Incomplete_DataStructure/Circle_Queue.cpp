@@ -21,18 +21,18 @@ bool IsFull(Queue* queue)
 
 }
 
-//처음 엔큐할경우 front도 0으로 바꿔서 Full과 구분시켜줄것.
+
 void Enqueue(Queue* queue, int data)
 {
 	bool FullCheck = IsFull(queue);
 
 	if (FullCheck == false)
 	{
-		if (queue->front == -1)
+		if (queue->front == -1) // When Queue is Empty
 		{
 			queue->front = 0;
 		}
-		queue->rear = (queue->rear+1) % SIZE;       //모듈러 연산을 통해 순환하게끔
+		queue->rear = (queue->rear+1) % SIZE;       //Initialize 'rear' by Modular
 		queue->Arr[queue->rear] = data;
 		cout << "Enqueue" << endl;
 	}
@@ -59,7 +59,7 @@ void Dequeue(Queue* queue)
 	if (EmptyCheck == false)
 	{
 		int data = queue->Arr[queue->front];
-		if (queue->front == queue->rear)   //고려해야될것. 오직 하나의 Element만 있을때!  근데 이게 꼭 초기화를 해줘야하나 ?
+		if (queue->front == queue->rear)   //After dequeue, Queue Is Empty. Initialize Queue
 		{
 			queue->front = -1;
 			queue->rear = -1;
