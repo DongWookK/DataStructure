@@ -27,9 +27,6 @@
     <ClCompile Include="Counting_Sort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Radix_Sort.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RadixSort_Practice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
