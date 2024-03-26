@@ -8,18 +8,21 @@ public:
 	Node* InitialNode(Node* node, int data, Node* LeftChild, Node* RightChild);
 	void Init(void);
 
-private:
+public:
 	int data;
 	Node* LeftChild;
 	Node* RightChild;
 };
 
-class Btree
+class BTree
 {
 public:
-	Node* Insert();
-	Node* Delete();
+	Node* Insert(int data);
+	Node* Delete(int data);
 	
+	void PreOrder(Node* pNode);
+private:
+	Node* Find(int data);
 
 private:
 	Node mRoot = Node::GetDefault();
