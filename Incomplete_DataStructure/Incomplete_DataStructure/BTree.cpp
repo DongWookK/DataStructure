@@ -4,21 +4,59 @@
 #include <iostream>
 using namespace std;
 
-Node* Node::InitialNode(Node* node, int data, Node* LeftChild, Node* RightChild)
+#pragma region Node
+
+const Node& Node::GetDefault()
 {
-	node->LeftChild = LeftChild;
-	node->RightChild = RightChild;
-	node->data = data;
-	return node;
+	static Node aNode{};
+	return aNode;
 }
 
+Node* Node::InitialNode(Node* pNode, vector<int>& pData, vector<Node*> pChild)
+{
+	pNode->mChild = pChild;
+	pNode->mData = pData;
+	return pNode;
+}
+
+#pragma endregion
 
 void BTree::PreOrder(Node* pNode)
 {
-	cout << pNode->data << " ";
-	if (pNode->LeftChild != NULL)
-		PreOrder(pNode->LeftChild);
-	if (pNode->RightChild != NULL)
-		PreOrder(pNode->RightChild);
+	for (auto aKey : pNode->mData)
+	{
+		cout << aKey << " / ";
+	}
+
+	for (auto aNode : pNode->mChild)
+	{
+		PreOrder(aNode);
+	}
+}
+
+Node* BTree::Insert(int data)
+{
+	//Find
+	//Insert
+	//Check
+	return 0;
+}
+
+BTree::EState BTree::Check(Node* pNode) const
+{
+	if (M < pNode->mData.size())
+	{
+		return EOVER;
+	}
+	else if (pNode->mData.size() < ceil(((M / 2) - 1)))
+	{
+		return EUNDER;
+	}
+	
+	return ESAFE;
+}
+
+Node* BTree::Find(Node* pNode, int data)
+{
 
 }
