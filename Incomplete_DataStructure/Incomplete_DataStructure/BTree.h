@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <vector>
+#include <array>
 using namespace std;
 constexpr int M = 3;
 
@@ -8,11 +9,13 @@ class Node {
 public:
 	const static Node& GetDefault();
 public:
-	Node* InitialNode(Node* pNode, vector<int>& pData, vector<Node*> pChild);
-
+	Node* InitialNode(Node* pNode, int32_t pData);
+	const bool IsCanInsert(void) const;
+	void Insert(int32_t pData);
 public:
-	vector<int> mData = {};
-	vector<Node*> mChild = {};
+	array<int32_t, M> mData = {};
+	array<Node*, M> mChild = {};
+	Node* mParent = {};
 };
 
 /*
@@ -31,6 +34,8 @@ ex) 3차 B-트리라면 각 노드는 최소 2개의 자식 노드를 가진다.
 각 노드는 최소 ⌈M/2⌉-1개의 키를 가진다. (루트 노드 제외)
 ex) 3차 B-트리라면 각 노드는 최소 1개의 키를 가진다.
 
+
+데이터는 Leaf에 추가된다고 가정. Key만 Insert한다.
 */
 
 class BTree
@@ -44,14 +49,14 @@ public:
 	};
 
 public:
-	Node*							Insert(int data);
-
+	Node*							Insert(Node* pNode, int32_t pData);
 	void							PreOrder(Node* pNode);
 
 private:
 
-	Node*							Find(Node* pNode, int data);
+	Node*							Find(Node* pNode, int32_t pData);
 	BTree::EState					Check(Node* pNode)const;
+	void							Balancing(const EState pState, Node* pNode);
 
 
 private:
