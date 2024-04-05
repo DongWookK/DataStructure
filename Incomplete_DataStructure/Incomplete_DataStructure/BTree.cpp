@@ -18,17 +18,21 @@ Node* Node::InitialNode(Node* pNode, int32_t pData)
 	return pNode;
 }
 
-const bool Node::IsCanInsert(void) const
-{
-	return (mData.size() <= M) ? true : false;
-}
-
 void Node::Insert(int32_t pData)
 {
 	// 삽입은 항상 leaf에 한다.
 	if (mData.empty())
 	{
 		mData[0] = pData;
+
+		mChild[0] = Node();
+		mChild[1] = Node();
+	}
+	else
+	{
+		mData[mData.size()] = pData;
+
+		mChild[(mData.size() + 1)] = Node();
 	}
 }
 
@@ -42,24 +46,28 @@ void BTree::PreOrder(Node* pNode)
 	}
 	printf("\n");
 
-	for (auto aNode : pNode->mChild)
+	for (auto& aNode : pNode->mChild)
 	{
-		PreOrder(aNode);
+		PreOrder(&aNode);
 	}
 }
 
+/*
+재귀적으로 호출할 수 있게 변경 필요
+1.InSert 초입은 Leaf를 찾는것이다.
+2. 다음은 인서트한다.
+3. 상태를 본다.
+4. 발란싱을한다.
+*/
 Node* BTree::Insert(Node* pNode, int32_t pData)
 {
-	BTree::EState aState = ESAFE;
-	if (pNode->IsCanInsert())
-	{
-		pNode->Insert(pData);
-		aState = Check(pNode);
-		
-	}
+	//리프찾기
+	auto aNode = FindLeafNode(pNode, pData);
 
-	auto aNode = Find(pNode, pData);
-	//Check
+	//리프라면
+	pNode->Insert(pData);
+
+	//Check 후 발란싱
 	return 0;
 }
 
@@ -77,7 +85,7 @@ BTree::EState BTree::Check(Node* pNode) const
 	return ESAFE;
 }
 
-Node* BTree::Find(Node* pNode, int pData)
+Node* BTree::FindLeafNode(Node* pNode, int pData)
 {
 	int32_t aIndex = 0;
 	for(auto aKey : pNode->mData)

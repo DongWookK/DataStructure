@@ -10,11 +10,10 @@ public:
 	const static Node& GetDefault();
 public:
 	Node* InitialNode(Node* pNode, int32_t pData);
-	const bool IsCanInsert(void) const;
 	void Insert(int32_t pData);
 public:
 	array<int32_t, M> mData = {};
-	array<Node*, M> mChild = {};
+	array<Node, M> mChild = {};
 	Node* mParent = {};
 };
 
@@ -54,7 +53,7 @@ public:
 
 private:
 
-	Node*							Find(Node* pNode, int32_t pData);
+	Node*							FindLeafNode(Node* pNode, int32_t pData);
 	BTree::EState					Check(Node* pNode)const;
 	void							Balancing(const EState pState, Node* pNode);
 
