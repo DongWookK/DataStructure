@@ -9,10 +9,11 @@ class Node {
 public:
 	const static Node& GetDefault();
 public:
-	Node* InitialNode(Node* pNode, int32_t pData);
-	void Insert(int32_t pData);
+	Node* InitialNode(Node* pNode, int32_t pKey);
+	void Insert(int32_t pKey);
+	const bool IsLeaf(void) const;
 public:
-	array<int32_t, M> mData = {};
+	array<int32_t, M> mKey = {};
 	array<Node, M> mChild = {};
 	Node* mParent = {};
 };
@@ -48,12 +49,12 @@ public:
 	};
 
 public:
-	Node*							Insert(Node* pNode, int32_t pData);
+	Node*							Insert(Node* pNode, int32_t pKey);
 	void							PreOrder(Node* pNode);
 
 private:
 
-	Node*							FindLeafNode(Node* pNode, int32_t pData);
+	Node*							FindLeafNode(Node* pNode, int32_t pKey);
 	BTree::EState					Check(Node* pNode)const;
 	void							Balancing(const EState pState, Node* pNode);
 
