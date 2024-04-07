@@ -14,8 +14,8 @@ public:
 	const bool IsLeaf(void) const;
 public:
 	array<int32_t, M> mKey = {};
-	array<Node, M> mChild = {};
-	Node* mParent = {};
+	array<Node*, M> mChild = {};
+	Node* mParent = nullptr;
 };
 
 /*
@@ -49,8 +49,9 @@ public:
 	};
 
 public:
-	Node*							Insert(Node* pNode, int32_t pKey);
+	Node*							Insert(Node* pNode, int32_t pKey, bool pIsBalancing  = false);
 	void							PreOrder(Node* pNode);
+	Node*							GetRoot(void);
 
 private:
 
@@ -60,6 +61,6 @@ private:
 
 
 private:
-	Node mRoot = Node::GetDefault();
+	Node mInitialNode{};
 	__int32 mSize = 0;
 };

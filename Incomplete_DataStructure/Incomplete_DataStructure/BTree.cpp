@@ -25,14 +25,14 @@ void Node::Insert(int32_t pKey)
 	{
 		mKey[0] = pKey;
 
-		mChild[0] = Node();
-		mChild[1] = Node();
+		mChild[0] = new Node();
+		mChild[1] = new Node();
 	}
 	else
 	{
 		mKey[mKey.size()] = pKey;
 
-		mChild[(mKey.size() + 1)] = Node();
+		mChild[(mKey.size() + 1)] = new Node();
 	}
 }
 
@@ -51,10 +51,16 @@ void BTree::PreOrder(Node* pNode)
 	}
 	printf("\n");
 
-	for (auto& aNode : pNode->mChild)
+	for (auto aNode : pNode->mChild)
 	{
-		PreOrder(&aNode);
+		PreOrder(aNode);
 	}
+}
+
+Node* BTree::GetRoot(void)
+{
+	// TODO ******************** Get Top Parent
+	return &mInitialNode;
 }
 
 /*
@@ -64,15 +70,21 @@ void BTree::PreOrder(Node* pNode)
 3. 상태를 본다.
 4. 발란싱을한다.
 */
-Node* BTree::Insert(Node* pNode, int32_t pKey)
+Node* BTree::Insert(Node* pNode, int32_t pKey, bool pIsBalancing)
 {
-	Node* aLeafNode = FindLeafNode(pNode, pKey);
+	Node* aInsertNode = nullptr;
+	if (!pIsBalancing)
+	{
+		aInsertNode = pNode;
+	}
+	else
+	{
+		aInsertNode = FindLeafNode(pNode, pKey);
+	}
 
-	aLeafNode->Insert(pKey);
-
-	auto aState = Check(aLeafNode);
-	
-	Balancing(aState, aLeafNode);
+	aInsertNode->Insert(pKey);
+	auto aState = Check(aInsertNode);
+	Balancing(aState, aInsertNode);
 	
 	return 0;
 }
@@ -91,14 +103,14 @@ BTree::EState BTree::Check(Node* pNode) const
 	return ESAFE;
 }
 
-Node* BTree::FindLeafNode(Node* pNode, int pKey)
+Node* BTree::FindLeafNode(Node* pNode, int32_t pKey)
 {
 	if (pNode->IsLeaf())
 	{
 		return pNode;
 	}
 
-	int32_t aIndex = 0;
+	size_t aIndex = 0;
 	for(auto aKey : pNode->mKey)
 	{
 		if (aKey < pKey)
@@ -121,7 +133,7 @@ Node* BTree::FindLeafNode(Node* pNode, int pKey)
 		}
 	}
 
-	return &pNode->mChild[aIndex];
+	return pNode->mChild[aIndex];
 }
 
 void BTree::Balancing(const EState pState, Node* pNode)
@@ -134,10 +146,9 @@ void BTree::Balancing(const EState pState, Node* pNode)
 	}break;
 	case EOVER:
 	{
-		uint32_t aMedianIndex = 0;
-		uint32_t aUpKey = 0;
-		// Key가 짝수일때 Median값은 항상 N/2 - 1로 정한다.
-		if (0 == pNode->mKey.size() % 2)
+		size_t aMedianIndex = 0;
+		int32_t aMedianValue = 0;
+		if (0 == pNode->mKey.size() % 2) // Key가 짝수일때 Median값은 항상 N/2 - 1로 정한다.
 		{
 			aMedianIndex = pNode->mKey.size() / 2 - 1;
 		}
@@ -146,14 +157,19 @@ void BTree::Balancing(const EState pState, Node* pNode)
 			aMedianIndex = pNode->mKey.size() / 2;
 		}
 
-		aUpKey = pNode->mKey[aMedianIndex];
+		aMedianValue = pNode->mKey[aMedianIndex];
 
-		for (uint32_t i = aMedianIndex; i < pNode->mChild.size() - 1; i++)
+		for (size_t i = aMedianIndex; i < pNode->mChild.size() - 1; i++)
 		{
 			pNode->mChild[i] = pNode->mChild[i+1];
 		}
 		
-		// aUpKey를 pNode의 패런트에 인서트하고체크한다.
+
+		if (nullptr == pNode->mParent)
+		{
+			pNode->mParent = new Node();
+		}
+		pNode->mParent->Insert(aMedianValue);
 		
 	}break;
 	case EUNDER:
