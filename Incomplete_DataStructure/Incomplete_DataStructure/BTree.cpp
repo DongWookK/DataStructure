@@ -12,33 +12,45 @@ const Node& Node::GetDefault()
 	return aNode;
 }
 
-Node* Node::InitialNode(Node* pNode, int32_t pKey)
+void Node::Insert(const int32_t pKey, const Node* pFromNode)
 {
-	pNode->Insert(pKey);
-	return pNode;
-}
-
-void Node::Insert(int32_t pKey)
-{
-	// 삽입은 항상 leaf에 한다.
 	if (mKey.empty())
 	{
-		mKey[0] = pKey;
+		mKey.push_back(pKey);
 
-		mChild[0] = new Node();
-		mChild[1] = new Node();
+		if (&Node::GetDefault() != pFromNode) // Internal Node
+		{
+			mChild.push_back(const_cast<Node*>(pFromNode));
+			mChild.push_back(new Node());
+		}
+		else // LeafNode
+		{
+			if (&Node::GetDefault() != pFromNode)
+			{
+				cout << "Error" << endl;
+			}
+			mChild.push_back(const_cast<Node*>(pFromNode));
+			mChild.push_back(const_cast<Node*>(pFromNode));
+		}
 	}
 	else
 	{
-		mKey[mKey.size()] = pKey;
-
-		mChild[(mKey.size() + 1)] = new Node();
+		mKey.push_back(pKey);
+		mChild.push_back(const_cast<Node*>(pFromNode));
 	}
 }
 
 const bool Node::IsLeaf(void) const
 {
-	return (mKey.empty());
+	for (const auto& aChild : mChild)
+	{
+		if (false == aChild->mKey.empty())
+		{
+			return false;
+		}
+	}
+	
+	return true;
 }
 
 #pragma endregion
@@ -59,21 +71,25 @@ void BTree::PreOrder(Node* pNode)
 
 Node* BTree::GetRoot(void)
 {
-	// TODO ******************** Get Top Parent
-	return &mInitialNode;
+	Node* aNode = &mInitialNode;
+	while (nullptr != aNode->mParent)
+	{
+		aNode = aNode->mParent;
+	}
+	return aNode;
 }
 
 /*
 재귀적으로 호출할 수 있게 변경 필요
-1.InSert 초입은 알맞는 Leaf를 찾는 것이다.
+1.Insert 초입은 알맞는 Leaf를 찾는 것이다.
 2. 다음은 인서트한다.
 3. 상태를 본다.
 4. 발란싱을한다.
 */
-Node* BTree::Insert(Node* pNode, int32_t pKey, bool pIsBalancing)
+Node* BTree::Insert(Node* pNode, int32_t pKey, const Node* pFromNode)
 {
 	Node* aInsertNode = nullptr;
-	if (!pIsBalancing)
+	if (&Node::GetDefault() != pFromNode) // balancing
 	{
 		aInsertNode = pNode;
 	}
@@ -82,7 +98,7 @@ Node* BTree::Insert(Node* pNode, int32_t pKey, bool pIsBalancing)
 		aInsertNode = FindLeafNode(pNode, pKey);
 	}
 
-	aInsertNode->Insert(pKey);
+	aInsertNode->Insert(pKey, pFromNode);
 	auto aState = Check(aInsertNode);
 	Balancing(aState, aInsertNode);
 	
@@ -169,8 +185,8 @@ void BTree::Balancing(const EState pState, Node* pNode)
 		{
 			pNode->mParent = new Node();
 		}
-		pNode->mParent->Insert(aMedianValue);
-		
+
+		Insert(pNode->mParent, aMedianValue, pNode);
 	}break;
 	case EUNDER:
 	{

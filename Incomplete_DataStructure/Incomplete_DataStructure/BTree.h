@@ -9,12 +9,11 @@ class Node {
 public:
 	const static Node& GetDefault();
 public:
-	Node* InitialNode(Node* pNode, int32_t pKey);
-	void Insert(int32_t pKey);
+	void Insert(const int32_t pKey, const Node* pFromNode = &Node::GetDefault());
 	const bool IsLeaf(void) const;
 public:
-	array<int32_t, M> mKey = {};
-	array<Node*, M> mChild = {};
+	vector<int32_t> mKey;
+	vector<Node*> mChild;
 	Node* mParent = nullptr;
 };
 
@@ -47,9 +46,10 @@ public:
 		, EOVER
 		, EUNDER
 	};
+public:
 
 public:
-	Node*							Insert(Node* pNode, int32_t pKey, bool pIsBalancing  = false);
+	Node*							Insert(Node* pNode, int32_t pKey, const Node* = &Node::GetDefault());
 	void							PreOrder(Node* pNode);
 	Node*							GetRoot(void);
 
