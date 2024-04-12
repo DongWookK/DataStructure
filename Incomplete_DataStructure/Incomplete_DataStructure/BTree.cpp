@@ -35,8 +35,25 @@ void Node::Insert(const int32_t pKey, const Node* pFromNode)
 	}
 	else
 	{
-		mKey.push_back(pKey);
-		mChild.push_back(const_cast<Node*>(pFromNode));
+		int32_t aIndex = 0;
+		for (aIndex = 0; aIndex < mKey.size(); ++aIndex)
+		{
+			if (pKey < mKey[aIndex])
+			{
+				continue;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (aIndex == mKey.size() -1)
+		{
+			mKey.push_back(pKey);
+			mChild.push_back(const_cast<Node*>(pFromNode));
+		}
+		// 여기서 뒤로 한칸씩민다??
 	}
 }
 
@@ -79,13 +96,6 @@ Node* BTree::GetRoot(void)
 	return aNode;
 }
 
-/*
-재귀적으로 호출할 수 있게 변경 필요
-1.Insert 초입은 알맞는 Leaf를 찾는 것이다.
-2. 다음은 인서트한다.
-3. 상태를 본다.
-4. 발란싱을한다.
-*/
 Node* BTree::Insert(Node* pNode, int32_t pKey, const Node* pFromNode)
 {
 	Node* aInsertNode = nullptr;
@@ -185,6 +195,12 @@ void BTree::Balancing(const EState pState, Node* pNode)
 		{
 			pNode->mParent = new Node();
 		}
+
+		/*
+		Key만 나눠도되는가
+		Child는 그대로?
+		
+		*/
 
 		Insert(pNode->mParent, aMedianValue, pNode);
 	}break;

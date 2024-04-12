@@ -34,11 +34,13 @@ ex) 3차 B-트리라면 각 노드는 최소 2개의 자식 노드를 가진다.
 ex) 3차 B-트리라면 각 노드는 최소 1개의 키를 가진다.
 
 
-데이터는 Leaf에 추가된다고 가정. Key만 Insert한다.
+모든 leaf node들은 항상 같은 level에 위치한다
 */
 
 class BTree
 {
+	using TKeys = std::vector<int32_t>;
+	using TSplitChild = tuple<TKeys, TKeys>;
 public:
 	enum EState
 	{
