@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include <array>
+#include <tuple>>
 using namespace std;
 constexpr int M = 3;
 
@@ -8,9 +9,11 @@ class Node {
 
 public:
 	const static Node& GetDefault();
+
 public:
 	void Insert(const int32_t pKey, const Node* pFromNode = &Node::GetDefault());
 	const bool IsLeaf(void) const;
+
 public:
 	vector<int32_t> mKey;
 	vector<Node*> mChild;
@@ -35,12 +38,14 @@ ex) 3차 B-트리라면 각 노드는 최소 1개의 키를 가진다.
 
 
 모든 leaf node들은 항상 같은 level에 위치한다
+
+
+TestCase 10, 20, 30, 40, 5, 7, 12, 50, 60, 70
 */
 
 class BTree
 {
 	using TKeys = std::vector<int32_t>;
-	using TSplitChild = tuple<TKeys, TKeys>;
 public:
 	enum EState
 	{
@@ -51,7 +56,11 @@ public:
 public:
 
 public:
-	Node*							Insert(Node* pNode, int32_t pKey, const Node* = &Node::GetDefault());
+	Node*							Insert(Node* pNode
+											, int32_t pKey
+											, const Node* = &Node::GetDefault()
+											, const TKeys& pLeftKey = TKeys()
+											, const TKeys& pRightKey = TKeys());
 	void							PreOrder(Node* pNode);
 	Node*							GetRoot(void);
 

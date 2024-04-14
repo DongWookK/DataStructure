@@ -18,19 +18,16 @@ void Node::Insert(const int32_t pKey, const Node* pFromNode)
 	{
 		mKey.push_back(pKey);
 
-		if (&Node::GetDefault() != pFromNode) // Internal Node
+		if (&Node::GetDefault() != pFromNode)	// Internal Node
 		{
-			mChild.push_back(const_cast<Node*>(pFromNode));
-			mChild.push_back(new Node());
+
 		}
-		else // LeafNode
+		else									// LeafNode
 		{
 			if (&Node::GetDefault() != pFromNode)
 			{
 				cout << "Error" << endl;
 			}
-			mChild.push_back(const_cast<Node*>(pFromNode));
-			mChild.push_back(const_cast<Node*>(pFromNode));
 		}
 	}
 	else
@@ -48,12 +45,16 @@ void Node::Insert(const int32_t pKey, const Node* pFromNode)
 			}
 		}
 
+		// 기존 Key,Child를 한칸씩 뒤로 밀고 aIndex에 삽입
+		for (int32_t i = aIndex; i < mKey.size(); ++i)
+		{
+			mKey[i + 1] = mKey[i];
+		}
+
 		if (aIndex == mKey.size() -1)
 		{
-			mKey.push_back(pKey);
-			mChild.push_back(const_cast<Node*>(pFromNode));
+			mKey[aIndex] = pKey;
 		}
-		// 여기서 뒤로 한칸씩민다??
 	}
 }
 
@@ -96,7 +97,11 @@ Node* BTree::GetRoot(void)
 	return aNode;
 }
 
-Node* BTree::Insert(Node* pNode, int32_t pKey, const Node* pFromNode)
+Node* BTree::Insert(Node* pNode
+					, int32_t pKey
+					, const Node* pFromNode
+					, const TKeys& pLeftKey
+					, const TKeys& pRightKey)
 {
 	Node* aInsertNode = nullptr;
 	if (&Node::GetDefault() != pFromNode) // balancing
@@ -109,6 +114,10 @@ Node* BTree::Insert(Node* pNode, int32_t pKey, const Node* pFromNode)
 	}
 
 	aInsertNode->Insert(pKey, pFromNode);
+
+	// TODO :: pKey만 올리고 삽입된 인덱스에 따라서 pFromNode를 어느 차일드에 둘지
+	// 나머지 부족한 차일드를 어디서 가져올지 결정한다.
+
 	auto aState = Check(aInsertNode);
 	Balancing(aState, aInsertNode);
 	
@@ -195,12 +204,8 @@ void BTree::Balancing(const EState pState, Node* pNode)
 		{
 			pNode->mParent = new Node();
 		}
-
-		/*
-		Key만 나눠도되는가
-		Child는 그대로?
 		
-		*/
+		pNode->mKey.erase(pNode->mKey.begin() + aMedianIndex);
 
 		Insert(pNode->mParent, aMedianValue, pNode);
 	}break;
