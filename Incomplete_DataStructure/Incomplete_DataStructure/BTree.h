@@ -58,9 +58,7 @@ public:
 public:
 	Node*							Insert(Node* pNode
 											, int32_t pKey
-											, const Node* = &Node::GetDefault()
-											, const TKeys& pLeftKey = TKeys()
-											, const TKeys& pRightKey = TKeys());
+											, const Node* = &Node::GetDefault());
 	void							PreOrder(Node* pNode);
 	Node*							GetRoot(void);
 

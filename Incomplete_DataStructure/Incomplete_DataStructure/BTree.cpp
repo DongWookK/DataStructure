@@ -99,9 +99,7 @@ Node* BTree::GetRoot(void)
 
 Node* BTree::Insert(Node* pNode
 					, int32_t pKey
-					, const Node* pFromNode
-					, const TKeys& pLeftKey
-					, const TKeys& pRightKey)
+					, const Node* pFromNode)
 {
 	Node* aInsertNode = nullptr;
 	if (&Node::GetDefault() != pFromNode) // balancing
@@ -115,8 +113,9 @@ Node* BTree::Insert(Node* pNode
 
 	aInsertNode->Insert(pKey, pFromNode);
 
-	// TODO :: pKey만 올리고 삽입된 인덱스에 따라서 pFromNode를 어느 차일드에 둘지
-	// 나머지 부족한 차일드를 어디서 가져올지 결정한다.
+	// TODO ::
+	// pKey의 노드가 상위 노드의 몇번째 차일드였는지에 따라
+	// 스플릿된 왼,오른쪽 키들의 병합, 신규삽입 여부가 결정된다.
 
 	auto aState = Check(aInsertNode);
 	Balancing(aState, aInsertNode);
@@ -199,13 +198,24 @@ void BTree::Balancing(const EState pState, Node* pNode)
 			pNode->mChild[i] = pNode->mChild[i+1];
 		}
 		
+		pNode->mKey.erase(pNode->mKey.begin() + aMedianIndex);
 
-		if (nullptr == pNode->mParent)
+		// TODO :: 여기에 SplitNode
+		// 병합될일은 없다.
+		// 차일드는 두개씩 나눠가진다.
+
+
+		if (nullptr == pNode->mParent) // 상위 노드가 없을 때 최초 삽입
 		{
 			pNode->mParent = new Node();
+
+			// 인서트 전에 parent에 split한 좌,우 0,1 인덱스로 노드를 넣는다.
 		}
-		
-		pNode->mKey.erase(pNode->mKey.begin() + aMedianIndex);
+		else
+		{
+			// 내가 parent의 몇번째 child인지 확인
+			// 해당 인덱스로 삽입한다. 좌,우 차일드를 삽입한다.
+		}
 
 		Insert(pNode->mParent, aMedianValue, pNode);
 	}break;
