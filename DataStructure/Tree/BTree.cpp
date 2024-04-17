@@ -45,7 +45,6 @@ void Node::Insert(const int32_t pKey, const Node* pFromNode)
 			}
 		}
 
-		// 기존 Key,Child를 한칸씩 뒤로 밀고 aIndex에 삽입
 		for (int32_t i = aIndex; i < mKey.size(); ++i)
 		{
 			mKey[i + 1] = mKey[i];
@@ -56,6 +55,21 @@ void Node::Insert(const int32_t pKey, const Node* pFromNode)
 			mKey[aIndex] = pKey;
 		}
 	}
+}
+
+Node::SplitNode Node::Split(void)
+{
+	Node* aLeft = new Node();
+	Node* aRight = new Node();
+	auto aMedian = (mKey.size() / 2 - 1);
+	auto aChildMedian = (int32_t) mChild.size() / 2;
+	std::copy(mKey.begin(), mKey.begin() + aMedian, aLeft->mKey.begin());
+	std::copy(mKey.begin() + aMedian, mKey.end(), aRight->mKey.begin());
+	std::copy(mChild.begin(), mChild.begin() + aChildMedian, aLeft->mChild.begin());
+	std::copy(mChild.begin() + aChildMedian, mChild.end(), aRight->mChild.begin());
+
+	Node::SplitNode aResult(aLeft, aRight);
+	return aResult;
 }
 
 const bool Node::IsLeaf(void) const
@@ -102,7 +116,7 @@ Node* BTree::Insert(Node* pNode
 					, const Node* pFromNode)
 {
 	Node* aInsertNode = nullptr;
-	if (&Node::GetDefault() != pFromNode) // balancing
+	if (&Node::GetDefault() != pFromNode)
 	{
 		aInsertNode = pNode;
 	}
@@ -112,10 +126,6 @@ Node* BTree::Insert(Node* pNode
 	}
 
 	aInsertNode->Insert(pKey, pFromNode);
-
-	// TODO ::
-	// pKey의 노드가 상위 노드의 몇번째 차일드였는지에 따라
-	// 스플릿된 왼,오른쪽 키들의 병합, 신규삽입 여부가 결정된다.
 
 	auto aState = Check(aInsertNode);
 	Balancing(aState, aInsertNode);
@@ -182,7 +192,7 @@ void BTree::Balancing(const EState pState, Node* pNode)
 	{
 		size_t aMedianIndex = 0;
 		int32_t aMedianValue = 0;
-		if (0 == pNode->mKey.size() % 2) // Key가 짝수일때 Median값은 항상 N/2 - 1로 정한다.
+		if (0 == pNode->mKey.size() % 2)
 		{
 			aMedianIndex = pNode->mKey.size() / 2 - 1;
 		}
@@ -199,22 +209,17 @@ void BTree::Balancing(const EState pState, Node* pNode)
 		}
 		
 		pNode->mKey.erase(pNode->mKey.begin() + aMedianIndex);
+		Node::SplitNode aSplitNode =  pNode->Split();
 
-		// TODO :: 여기에 SplitNode
-		// 병합될일은 없다.
-		// 차일드는 두개씩 나눠가진다.
-
-
-		if (nullptr == pNode->mParent) // 상위 노드가 없을 때 최초 삽입
+		if (nullptr == pNode->mParent)
 		{
 			pNode->mParent = new Node();
-
-			// 인서트 전에 parent에 split한 좌,우 0,1 인덱스로 노드를 넣는다.
+			pNode->mParent->mChild.push_back(aSplitNode.first);
+			pNode->mParent->mChild.push_back(aSplitNode.second);
 		}
 		else
 		{
-			// 내가 parent의 몇번째 child인지 확인
-			// 해당 인덱스로 삽입한다. 좌,우 차일드를 삽입한다.
+			// TODO : Check Key Index, Insert SplitNode First
 		}
 
 		Insert(pNode->mParent, aMedianValue, pNode);
