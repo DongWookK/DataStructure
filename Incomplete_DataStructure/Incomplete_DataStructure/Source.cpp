@@ -1,10 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <iostream>
-using namespace std;
+#include "Main.h"
 
 int main()
 {
-	cout << "start" << endl;
+	std::cout << "start" << std::endl;
 	
 }
